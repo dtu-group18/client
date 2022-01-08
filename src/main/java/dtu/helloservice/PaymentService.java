@@ -21,6 +21,7 @@ public class PaymentService {
 				.post(Entity.entity(payment, MediaType.APPLICATION_JSON_TYPE));
 		switch (response.getStatus()) {
 			case 200:
+			case 201:
 				return true;
 			case 404:
 				throw new NotFoundException(response.getStatusInfo().getReasonPhrase());
@@ -43,6 +44,13 @@ public class PaymentService {
 
 	public Payment getPayment() {
 		return new Payment("cid", "mid", 10);
+	}
+
+	public boolean addCustomerAndMerchant(String costumerId, String merchantId) {
+		Response response  = target.path("add").queryParam(costumerId).queryParam(merchantId)
+				.request()
+				.post(null);
+		return response.getStatus() == 200 || response.getStatus() == 201;
 	}
 
 }

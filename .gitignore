@@ -18,6 +18,8 @@
 *.iws
 *.iml
 *.ipr
+.iml / *.ipr
+.idea/misc.xml
 
 ### NetBeans ###
 /nbproject/private/
