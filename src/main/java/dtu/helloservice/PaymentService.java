@@ -16,7 +16,7 @@ public class PaymentService {
 
 	public boolean add(String costumerId, String merchantId, Double amount) throws NotFoundException {
 		Payment payment = new Payment(costumerId, merchantId, amount);
-		Response response  = target.path("add").path(costumerId).path(merchantId)
+		Response response  = target.path("add")
 				.request()
 				.post(Entity.entity(payment, MediaType.APPLICATION_JSON_TYPE));
 		switch (response.getStatus()) {
@@ -30,24 +30,20 @@ public class PaymentService {
 		}
 	}
 
-	public Payment get(String costumerId, String merchantId) {
-		return target.path("test").queryParam("cid", costumerId).queryParam("mid", merchantId).request().get(Payment.class);
+	public Payment get(String costumerId, String merchantId, String amount) {
+		return target.path("test").queryParam("cid", costumerId).queryParam("mid", merchantId).queryParam("amount", amount).request().get(Payment.class);
 	}
 
-	public void delete(String costumerId, String merchantId) {
-		target.queryParam("cid", costumerId).queryParam("mid", merchantId).request().delete();
+	public void delete(String costumerId, String merchantId, String amount) {
+		target.queryParam("cid", costumerId).queryParam("mid", merchantId).queryParam("amount", amount).request().delete();
 	}
 
 	public List<Payment> getPaymentsList() {
 		return target.path("list").request().get(new GenericType<>() {});
 	}
 
-	public Payment getPayment() {
-		return new Payment("cid", "mid", 10);
-	}
-
 	public boolean addCustomerAndMerchant(String costumerId, String merchantId) {
-		Response response  = target.path("add").queryParam(costumerId).queryParam(merchantId)
+		Response response  = target.path("add").path(costumerId).path(merchantId)
 				.request()
 				.post(null);
 		return response.getStatus() == 200 || response.getStatus() == 201;
