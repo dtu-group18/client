@@ -12,12 +12,11 @@ public class PaymentServiceSteps {
 
     PaymentService service = new PaymentService();
 
-
     // ---------------------scenario 1 ----------------------------------------
 
     @When("a payment with customer id {string} and merchant id {string} and amount of {string} kr")
     public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKr(String cid, String mid, String amount){
-
+        service.addCustomerAndMerchant(cid, mid);
         try{service.add(cid, mid, amount);}
         catch (NotFoundException e){System.out.println(e.getMessage());}
 
