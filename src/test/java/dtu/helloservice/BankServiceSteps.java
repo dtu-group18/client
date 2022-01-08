@@ -1,5 +1,6 @@
 package dtu.helloservice;
 
+import fastmoney.BankService;
 import fastmoney.BankServiceException_Exception;
 import fastmoney.User;
 import io.cucumber.java.en.And;
@@ -49,7 +50,7 @@ public class BankServiceSteps {
         merchant.setLastName("m-ln");
 
         try {
-            merchantAccountIdentifier = dtuBank.getBankServicePort().createAccountWithBalance(merchant, balance);
+            merchantAccountIdentifier = dtuBank.createAccountWithBalance(merchant, balance);
         } catch (BankServiceException_Exception bsException){
             bsException.printStackTrace();
         }
