@@ -22,8 +22,10 @@ public class PaymentService {
 	 * Method that calls the REST api requesting the person resource
 	 * @return the person resource
 	 */
-	public Person person(){
-		Person p = target.path("hello").path("person").request().accept("application/json").get(Person.class);
-		return p;
-	}
+//	public Person person(){
+//		Person p = target.path("hello").path("person").request().accept("application/json").get(Person.class);
+//		return p;
+//	}
+
+
 }
