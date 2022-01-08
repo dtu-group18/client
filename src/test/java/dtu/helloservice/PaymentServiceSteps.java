@@ -16,15 +16,18 @@ public class PaymentServiceSteps {
     // ---------------------scenario 1 ----------------------------------------
 
     @When("a payment with customer id {string} and merchant id {string} and amount of {int} kr")
-    public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKr(String cid, String mid, int amount){
+    public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKr(String cid, String mid, String amount){
 
-        try{service.add(cid, mid, (double)amount);}
+        try{service.add(cid, mid, amount);}
         catch (NotFoundException e){System.out.println(e.getMessage());}
 
     }
 
     @Then("a payment with customer id {string} and merchant id {string} and amount of {int} kr is registered")
     public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKrIsRegistered(String cid, String mid, int amount){
+
+        Payment p = service.get(cid , mid); //todo ---> we should properly query with amount also
+
 
     }
 
