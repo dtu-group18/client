@@ -12,47 +12,38 @@ public class PaymentServiceSteps {
     // Customer customer = new Customer();
     // Merchant merchant = new Merchant();
     PaymentService service = new PaymentService();
-    Payment payment = service.getPayment();
+    Payment payment = service.
+
     int amount;
 
     // scenario 1
-    @Given("a customer with id {string}")
-    public void aCustomerWithId(String cid1) {
-        assertEquals(cid1, payment.getCostumerId());
+
+    @When("a payment with customer id {string} and merchant id {string} and amount of {int} kr")
+    public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKr(String arg0, String arg1, int arg2) {
+
     }
 
-    @And("a merchant with id {string}")
-    public void aMerchantWithId(String mid1) {
-        assertEquals(mid1, payment.getMerchantId());
-    }
-
-    @When("the merchant initiates a payment for {int} kr by the  customer")
-    public void theMerchantInitiatesAPaymentForKrByTheCustomer(int value) {
-        assertEquals(value, (int) payment.getAmount());
-    }
-
-    @Then("the payment is successful")
-    public void thePaymentIsSuccessful() {
-        assertEquals(true, service.isSuccessful());
+    @Then("The payment is registered")
+    public void thePaymentIsRegistered() {
     }
 
     // scenario 2
-    @When("a payment is deleted")
-    public void aPaymentIsDeleted() {
-        
+    @When("a payment with customer id {string} and merchant id {string} is deleted")
+    public void aPaymentWithCustomerIdAndMerchantIdIsDeleted(String arg0, String arg1) {
+
     }
 
-    @Then("the payment does not exist")
-    public void thePaymentDoesNotExist() {
+    @Then("the payment does not exist in the register")
+    public void thePaymentDoesNotExistInTheRegister() {
     }
-
     // scenario 3
-    @When("the payment is requested")
-    public void thePaymentIsRequested() {
+    @When("a payment with customer id {string} and merchant id {string} is requested")
+    public void aPaymentWithCustomerIdAndMerchantIdIsRequested(String arg0, String arg1) {
+
     }
 
-    @Then("the corresponding payment is returned")
-    public void theCorrespondingPaymentIsReturned() {
+    @Then("a payment with customer id {string} and merchant id {string} is returned")
+    public void aPaymentWithCustomerIdAndMerchantIdIsReturned(String arg0, String arg1) {
     }
 
     // scenario 4
@@ -63,5 +54,7 @@ public class PaymentServiceSteps {
     @Then("a list of all the payments are returned")
     public void aListOfAllThePaymentsAreReturned() {
     }
+
+
 }
 

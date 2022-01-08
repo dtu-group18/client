@@ -1,22 +1,16 @@
 Feature: Payment
 
 	Scenario: Successful payment
-		Given a customer with id "cid1"
-		And a merchant with id "mid1"
-		When the merchant initiates a payment for 10 kr by the  customer
-		Then the payment is successful
+		When a payment with customer id "cid1" and merchant id "mid1" and amount of 10 kr
+		Then The payment is registered
 
 	Scenario: Remove payment
-		Given a customer with id "cid1"
-		And a merchant with id "mid1"
-		When a payment is deleted
-		Then the payment does not exist
+		When a payment with customer id "cid1" and merchant id "mid1" is deleted
+		Then the payment does not exist in the register
 
 	Scenario: Request payment
-		Given a customer with id "cid1"
-		And a merchant with id "mid1"
-		When the payment is requested
-		Then the corresponding payment is returned
+		When a payment with customer id "cid1" and merchant id "mid1" is requested
+		Then a payment with customer id "cid1" and merchant id "mid1" is returned
 
 	Scenario: Request list of payments
 		When a list of all payments are requested
