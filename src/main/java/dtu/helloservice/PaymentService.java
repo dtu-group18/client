@@ -17,14 +17,15 @@ public class PaymentService {
 	public boolean add(String costumerId, String merchantId, String amount) throws NotFoundException {
 		Payment payment = new Payment(costumerId, merchantId, amount);
 		Response response  = target.path("add")
-				.request()
-				.post(Entity.entity(payment, MediaType.APPLICATION_JSON_TYPE));
+				.request(MediaType.APPLICATION_JSON)
+				.accept(MediaType.TEXT_PLAIN)
+				.post(Entity.entity(payment, MediaType.APPLICATION_JSON));
 		switch (response.getStatus()) {
 			case 200:
 			case 201:
 				return true;
 			case 404:
-				throw new NotFoundException(response.getStatusInfo().getReasonPhrase());
+				throw new NotFoundException(response.getHeaderString("errMsg"));
 			default:
 				return false;
 		}
@@ -42,11 +43,5 @@ public class PaymentService {
 		return target.path("list").request().get(new GenericType<List<Payment> >() {});
 	}
 
-	public boolean addCustomerAndMerchant(String costumerId, String merchantId) {
-		Response response  = target.path("add").path(costumerId).path(merchantId)
-				.request()
-				.post(null);
-		return response.getStatus() == 200 || response.getStatus() == 201;
-	}
 
 }
