@@ -15,7 +15,7 @@ public class PaymentServiceSteps {
 
     // ---------------------scenario 1 ----------------------------------------
 
-    @When("a payment with customer id {string} and merchant id {string} and amount of {int} kr")
+    @When("a payment with customer id {string} and merchant id {string} and amount of {string} kr")
     public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKr(String cid, String mid, String amount){
 
         try{service.add(cid, mid, amount);}
@@ -23,11 +23,15 @@ public class PaymentServiceSteps {
 
     }
 
-    @Then("a payment with customer id {string} and merchant id {string} and amount of {int} kr is registered")
-    public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKrIsRegistered(String cid, String mid, int amount){
+    @Then("a payment with customer id {string} and merchant id {string} and amount of {string} kr is registered")
+    public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKrIsRegistered(String cid, String mid, String amount){
 
-        Payment p = service.get(cid , mid); //todo ---> we should properly query with amount also
+        Payment p = service.get(cid , mid, amount);
 
+        //checking that the id's and amount match for the entry recieved from the server
+        assertEquals(cid, p.getCostumerId());
+        assertEquals(mid, p.getMerchantId());
+        assertEquals(amount, p.getAmount());
 
     }
 
@@ -55,17 +59,24 @@ public class PaymentServiceSteps {
     public void aPaymentWithCustomerIdAndMerchantIdIsReturned(String cid, String mid) {
     }
 
+
     //-----------------------------------------------------------------------
 
     // ---------------------scenario 4 --------------------------------------
-    @When("a list of all payments are requested")
-    public void aListOfAllPaymentsAreRequested() {
+
+    @Given("a successful payment of {string} kr from customer {string} to merchant {string}")
+    public void aSuccessfulPaymentOfKrFromCustomerToMerchant(String arg0, String arg1, String arg2) {
+
     }
 
-    @Then("a list of all the payments are returned")
-    public void aListOfAllThePaymentsAreReturned() {
+    @When("a list of  payments are requested")
+    public void aListOfPaymentsAreRequested() {
+
     }
 
+    @Then("the list of payments contains a payment where customer {string} paid {string} kr to merchant {string}")
+    public void theListOfPaymentsContainsAPaymentWhereCustomerPaidKrToMerchant(String arg0, String arg1, String arg2) {
+    }
     //-----------------------------------------------------------------------
 
 
