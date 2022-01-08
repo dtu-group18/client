@@ -2,7 +2,7 @@ Feature: Payment
 
 	Scenario: Successful payment
 		When a payment with customer id "cid1" and merchant id "mid1" and amount of 10 kr
-		Then The payment is registered
+		Then a payment with customer id "cid1" and merchant id "mid1" and amount of 10 kr is registered
 
 	Scenario: Remove payment
 		When a payment with customer id "cid1" and merchant id "mid1" is deleted
