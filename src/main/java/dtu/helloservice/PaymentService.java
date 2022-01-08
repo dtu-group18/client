@@ -14,7 +14,7 @@ public class PaymentService {
 	Client client = ClientBuilder.newClient();
 	WebTarget target = client.target("http://localhost:8080/payment");
 
-	public boolean add(String costumerId, String merchantId, Double amount) throws NotFoundException {
+	public boolean add(String costumerId, String merchantId, String amount) throws NotFoundException {
 		Payment payment = new Payment(costumerId, merchantId, amount);
 		Response response  = target.path("add")
 				.request()
