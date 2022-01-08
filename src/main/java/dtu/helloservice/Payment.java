@@ -11,8 +11,7 @@ import lombok.Data;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Payment {
-    private String costumerId, merchantId;
-    private double amount;
+    private String costumerId, merchantId, amount;
 }
 
 

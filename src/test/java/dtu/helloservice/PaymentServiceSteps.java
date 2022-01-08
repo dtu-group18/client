@@ -9,44 +9,55 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PaymentServiceSteps {
 
-    // Customer customer = new Customer();
-    // Merchant merchant = new Merchant();
+
     PaymentService service = new PaymentService();
-    Payment payment = service.
 
-    int amount;
 
-    // scenario 1
+    // ---------------------scenario 1 ----------------------------------------
 
     @When("a payment with customer id {string} and merchant id {string} and amount of {int} kr")
-    public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKr(String arg0, String arg1, int arg2) {
+    public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKr(String cid, String mid, String amount){
+
+        try{service.add(cid, mid, amount);}
+        catch (NotFoundException e){System.out.println(e.getMessage());}
 
     }
 
-    @Then("The payment is registered")
-    public void thePaymentIsRegistered() {
+    @Then("a payment with customer id {string} and merchant id {string} and amount of {int} kr is registered")
+    public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKrIsRegistered(String cid, String mid, int amount){
+
+        Payment p = service.get(cid , mid); //todo ---> we should properly query with amount also
+
+
     }
 
-    // scenario 2
+    //-------------------------------------------------------------------------
+
+    // ---------------------scenario 2 ----------------------------------------
     @When("a payment with customer id {string} and merchant id {string} is deleted")
-    public void aPaymentWithCustomerIdAndMerchantIdIsDeleted(String arg0, String arg1) {
+    public void aPaymentWithCustomerIdAndMerchantIdIsDeleted(String cid, String mid) {
 
     }
 
     @Then("the payment does not exist in the register")
     public void thePaymentDoesNotExistInTheRegister() {
     }
-    // scenario 3
+
+    //------------------------------------------------------------------------
+
+    // ---------------------scenario 3 ---------------------------------------
     @When("a payment with customer id {string} and merchant id {string} is requested")
-    public void aPaymentWithCustomerIdAndMerchantIdIsRequested(String arg0, String arg1) {
+    public void aPaymentWithCustomerIdAndMerchantIdIsRequested(String cid, String mid) {
 
     }
 
     @Then("a payment with customer id {string} and merchant id {string} is returned")
-    public void aPaymentWithCustomerIdAndMerchantIdIsReturned(String arg0, String arg1) {
+    public void aPaymentWithCustomerIdAndMerchantIdIsReturned(String cid, String mid) {
     }
 
-    // scenario 4
+    //-----------------------------------------------------------------------
+
+    // ---------------------scenario 4 --------------------------------------
     @When("a list of all payments are requested")
     public void aListOfAllPaymentsAreRequested() {
     }
@@ -54,6 +65,8 @@ public class PaymentServiceSteps {
     @Then("a list of all the payments are returned")
     public void aListOfAllThePaymentsAreReturned() {
     }
+
+    //-----------------------------------------------------------------------
 
 
 }
