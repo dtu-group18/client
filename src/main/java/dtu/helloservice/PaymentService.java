@@ -16,7 +16,7 @@ public class PaymentService {
 
 	public boolean add(String costumerId, String merchantId, String amount) throws NotFoundException {
 		Payment payment = new Payment(costumerId, merchantId, amount);
-		Response response  = target.path("add").path("test")
+		Response response  = target.path("add")
 				.request()
 				.post(Entity.entity(payment, MediaType.APPLICATION_JSON_TYPE));
 		switch (response.getStatus()) {
