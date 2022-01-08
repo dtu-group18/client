@@ -16,7 +16,7 @@ public class PaymentService {
 
 	public boolean add(String costumerId, String merchantId, String amount) throws NotFoundException {
 		Payment payment = new Payment(costumerId, merchantId, amount);
-		Response response  = target.path("add")
+		Response response  = target.path("add").path("test")
 				.request()
 				.post(Entity.entity(payment, MediaType.APPLICATION_JSON_TYPE));
 		switch (response.getStatus()) {
@@ -39,7 +39,7 @@ public class PaymentService {
 	}
 
 	public List<Payment> getPaymentsList() {
-		return target.path("list").request().get(new GenericType<>() {});
+		return target.path("list").request().get(new GenericType<List<Payment> >() {});
 	}
 
 	public boolean addCustomerAndMerchant(String costumerId, String merchantId) {

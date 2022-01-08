@@ -13,12 +13,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="CucumberExample" options="--add-modules java.base" />
-    </option>
-  </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="CucumberExample" options="-endorseddirs D:\Projects\IdeaProjects\Group-18-DTUPAYREST\Client_side\target/endorsed" />
+      <module name="CucumberExample" options="-endorseddirs $PROJECT_DIR$/target/endorsed" />
     </option>
   </component>
 </project>

@@ -12,7 +12,6 @@ Feature: Payment
 		When a payment with customer id "cid1" and merchant id "mid1" is deleted
 		Then the payment does not exist in the register
 
-
 	Scenario: List of payments
 		Given a successful payment of "10" kr from customer "cid1" to merchant "mid1"
 		When a list of  payments are requested
