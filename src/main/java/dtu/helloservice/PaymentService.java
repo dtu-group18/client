@@ -3,7 +3,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
-public class HelloService {
+public class PaymentService {
 
 	//building the client and the target
 	Client client = ClientBuilder.newClient();

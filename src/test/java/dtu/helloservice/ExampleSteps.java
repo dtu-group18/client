@@ -10,7 +10,7 @@ public class ExampleSteps {
 	String result;
 	Person p;
 
-	HelloService service = new HelloService();
+	PaymentService service = new PaymentService();
 
 	@When("I call the hello service")
 	public void iCallTheHelloService(){result = service.hello();}
