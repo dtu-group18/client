@@ -10,12 +10,15 @@ import org.junit.Assert;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BankServiceSteps {
     BankService dtuBank = new BankServiceService().getBankServicePort();
     PaymentService dtuSimplePay = new PaymentService();
     CustomerService customerService = new CustomerService();
     MerchantService merchantService = new MerchantService();
+    PaymentService paymentService = new PaymentService();
 
     static String customerAccountIdentifier;
     static String merchantAccountIdentifier;
@@ -23,6 +26,8 @@ public class BankServiceSteps {
     static User merchant;
     static String customerId;
     static String merchantId;
+    static int transferAmount;
+    boolean successfulPayment;
 
     @When("test dtu bank")
     public void check() throws BankServiceException_Exception {
@@ -148,13 +153,23 @@ public class BankServiceSteps {
     }
 
     @And("the balance of the customer at the bank is {int} kr")
-    public void theBalanceOfTheCustomerAtTheBankIsKr(int arg0) {
-
+    public void theBalanceOfTheCustomerAtTheBankIsKr(int customerBalance) {
+        try {
+            BigDecimal b =  dtuBank.getAccount(customerAccountIdentifier).getBalance();
+            assertEquals(customerBalance, b.intValue());
+        } catch (BankServiceException_Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @And("the balance of the merchant at the bank is {int} kr")
-    public void theBalanceOfTheMerchantAtTheBankIsKr(int arg0) {
-
+    public void theBalanceOfTheMerchantAtTheBankIsKr(int merchantBalance) {
+        try {
+            BigDecimal b =  dtuBank.getAccount(merchantAccountIdentifier).getBalance();
+            assertEquals(merchantBalance, b.intValue());
+        } catch (BankServiceException_Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**

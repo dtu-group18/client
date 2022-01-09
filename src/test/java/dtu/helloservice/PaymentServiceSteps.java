@@ -1,84 +1,129 @@
 package dtu.helloservice;
 
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PaymentServiceSteps {
-
-
     PaymentService service = new PaymentService();
+    boolean successfulPayment;
+    String cid, mid;
+    List<Payment> paymentList;
+    String unknownCostumerErrMsg;
+    String unknownMerchantErrMsg;
 
-    // ---------------------scenario 1 ----------------------------------------
+    // ---------------------Successful Payment----------------------------------------
 
-    @When("a payment with customer id {string} and merchant id {string} and amount of {string} kr")
-    public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKr(String cid, String mid, String amount){
-        service.addCustomerAndMerchant(cid, mid);
-        try{service.add(cid, mid, amount);}
-        catch (NotFoundException e){System.out.println(e.getMessage());}
-
+    @Given("a customer with id {string} and a merchant with id {string}")
+    public void iHaveCostumerAndMerchant(String cid, String mid) {
+        this.cid = cid;
+        this.mid = mid;
     }
 
-    @Then("a payment with customer id {string} and merchant id {string} and amount of {string} kr is registered")
-    public void aPaymentWithCustomerIdAndMerchantIdAndAmountOfKrIsRegistered(String cid, String mid, String amount){
+    @When("the merchant initiates a payment for {string} kr by the customer")
+    public void initiatePayment(String amount) {
+        try {
+            successfulPayment = service.add(cid, mid, amount);
+        } catch (NotFoundException e) {
+            successfulPayment = false;
+            System.out.println(e.getMessage());
+        }
+    }
 
-        Payment p = service.get(cid , mid, amount);
-
-        //checking that the id's and amount match for the entry recieved from the server
-        assertEquals(cid, p.getCostumerId());
-        assertEquals(mid, p.getMerchantId());
-        assertEquals(amount, p.getAmount());
-
+    @Then("the payment is successful")
+    public void ifPaymentSuccessful() {
+        Assert.assertTrue(successfulPayment);
     }
 
     //-------------------------------------------------------------------------
 
-    // ---------------------scenario 2 ----------------------------------------
-    @When("a payment with customer id {string} and merchant id {string} is deleted")
-    public void aPaymentWithCustomerIdAndMerchantIdIsDeleted(String cid, String mid) {
 
+    // ---------------------List of payments--------------------------------------
+
+    @Given("a successful payment of {string} kr from customer {string} to merchant {string}")
+    public void getPayment(String amount, String cid, String mid) {
+        Payment p = service.get(cid, mid, amount);
+
+        assertEquals(cid, p.getCostumerId());
+        assertEquals(mid, p.getMerchantId());
+        assertEquals(amount, p.getAmount());
     }
 
-    @Then("the payment does not exist in the register")
-    public void thePaymentDoesNotExistInTheRegister() {
+    @When("the manager asks for a list of payments")
+    public void getPayments() {
+        paymentList = service.getPaymentsList();
+    }
+
+    @Then("the list of payments contains a payment where customer {string} paid {string} kr to merchant {string}")
+    public void ifListContainsPayment(String cid, String amount, String mid) {
+        Payment paymentFromList = null;
+        for(Payment p: paymentList) {
+            if (p.getAmount().equals(amount) && p.getCostumerId().equals(cid) && p.getMerchantId().equals(mid)) {
+                paymentFromList = p;
+                break;
+            }
+        }
+        assertNotNull(paymentFromList);
+    }
+
+    //-----------------------------------------------------------------------
+
+    // ---------------------Customer is not known ----------------------------------------
+    @Given("a new customer with id {string} and merchant with id {string}")
+    public void iHaveNewCostumer(String cid2, String mid) {
+        this.cid = cid2;
+        this.mid = mid;
+    }
+
+    @When("the merchant initiates a payment for {string} kr by the new customer")
+    public void addPaymentForNewCostumer(String amount) {
+        try {
+            service.add(cid, mid, amount);
+        } catch (NotFoundException e) {
+            successfulPayment = false;
+            unknownCostumerErrMsg = e.getMessage();
+        }
+    }
+
+    @Then("the payment is not successful")
+    public void ifPaymentNotSuccessful() {
+        assertEquals(false, successfulPayment);
+    }
+
+    @Then("an unknown costumer error message is returned saying {string}")
+    public void checkUnknownCostumerErrMsg(String errorMsg) {
+        assertEquals(unknownCostumerErrMsg, errorMsg);
     }
 
     //------------------------------------------------------------------------
 
-    // ---------------------scenario 3 ---------------------------------------
-    @When("a payment with customer id {string} and merchant id {string} is requested")
-    public void aPaymentWithCustomerIdAndMerchantIdIsRequested(String cid, String mid) {
 
+    // ---------------------Merchant is not known ----------------------------------------
+    @Given("a customer with id {string} and a new merchant with id {string}")
+    public void iHaveNewMerchant(String cid, String mid2) {
+        this.cid = cid;
+        this.mid = mid2;
     }
 
-    @Then("a payment with customer id {string} and merchant id {string} is returned")
-    public void aPaymentWithCustomerIdAndMerchantIdIsReturned(String cid, String mid) {
+    @When("the new merchant initiates a payment for {string} kr by the customer")
+    public void addPaymentForNewMerchant(String amount) {
+        try {
+            service.add(cid, mid, amount);
+        } catch (NotFoundException e) {
+            successfulPayment = false;
+            unknownMerchantErrMsg = e.getMessage();
+        }
     }
 
-
-    //-----------------------------------------------------------------------
-
-    // ---------------------scenario 4 --------------------------------------
-
-    @Given("a successful payment of {string} kr from customer {string} to merchant {string}")
-    public void aSuccessfulPaymentOfKrFromCustomerToMerchant(String arg0, String arg1, String arg2) {
-
+    @Then("an unknown merchant error message is returned saying {string}")
+    public void checkUnknownMerchantErrMsg(String errorMsg) {
+        assertEquals(unknownMerchantErrMsg, errorMsg);
     }
 
-    @When("a list of  payments are requested")
-    public void aListOfPaymentsAreRequested() {
-
-    }
-
-    @Then("the list of payments contains a payment where customer {string} paid {string} kr to merchant {string}")
-    public void theListOfPaymentsContainsAPaymentWhereCustomerPaidKrToMerchant(String arg0, String arg1, String arg2) {
-    }
-    //-----------------------------------------------------------------------
-
+    //------------------------------------------------------------------------
 
 }
 
