@@ -28,7 +28,7 @@ public class BankServiceSteps {
     public void check() throws BankServiceException_Exception {
         try {
 //            dtuBank.retireAccount("");
-//            dtuBank.retireAccount("63adde6d-6577-4991-b45e-4dd3eca51b49");
+//            dtuBank.retireAccount("085b86ee-4335-412a-8e2c-11fb28bd0ebc");
 //            dtuBank.retireAccount("f984e2c0-be99-4647-9fe0-2532d2032f5d");
 
             List<AccountInfo> list = dtuBank.getAccounts();
