@@ -38,9 +38,9 @@ public class PaymentService {
 		target.queryParam("cid", costumerId).queryParam("mid", merchantId).queryParam("amount", amount).request().delete();
 	}
 
-	public List<Payment> getPaymentsList() {
-		return target.path("list").request().get(new GenericType<>() {});
-	}
+//	public List<Payment> getPaymentsList() {
+//		return target.path("list").request().get(new GenericType<>() {});
+//	}
 
 	public boolean addCustomerAndMerchant(String costumerId, String merchantId) {
 		Response response  = target.path("add").path(costumerId).path(merchantId)
