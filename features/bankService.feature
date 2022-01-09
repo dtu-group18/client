@@ -1,4 +1,4 @@
-Feature: Payment
+Feature: bank
   Scenario: Check dtu bank connects successfully
     When test dtu bank
 

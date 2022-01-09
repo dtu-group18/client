@@ -27,19 +27,25 @@ public class CustomerService {
 	/**
 	 * Register customer to dtu simple pay
 	 *
-	 * @param costumerId
 	 * @param name
 	 * @param cpr
 	 * @param bankAccount
 	 * @return boolean
 	 */
-	public boolean register(String costumerId, String name, String cpr, String bankAccount) {
+	public String register(String name, String cpr, String bankAccount) {
 		// Register customer
-		Response response  = target.path(costumerId).path(name).path(cpr).path(bankAccount)
+		Customer newCustomer = new Customer();
+		newCustomer.setCpr(cpr);
+		newCustomer.setBankAccount(bankAccount);
+		newCustomer.setName(name);
+		Response response  = target.path("registration")
 				.request()
-				.post(null);
+				.post(Entity.entity(newCustomer, MediaType.APPLICATION_JSON_TYPE));
 
-		return response.getStatus() == Response.Status.CREATED.getStatusCode();
+		// Get customer id
+		String id = response.readEntity(String.class);
+
+		return response.getStatus() == Response.Status.OK.getStatusCode() ? id : null;
 	}
 
 	/**

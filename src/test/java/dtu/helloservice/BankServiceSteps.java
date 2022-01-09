@@ -21,14 +21,14 @@ public class BankServiceSteps {
     static String merchantAccountIdentifier;
     static User customer;
     static User merchant;
-    static String customerId = "cid1";
-    static String merchantId = "mid1";
+    static String customerId;
+    static String merchantId;
 
     @When("test dtu bank")
     public void check() throws BankServiceException_Exception {
         try {
 //            dtuBank.retireAccount("");
-//            dtuBank.retireAccount("085b86ee-4335-412a-8e2c-11fb28bd0ebc");
+//            dtuBank.retireAccount("63adde6d-6577-4991-b45e-4dd3eca51b49");
 //            dtuBank.retireAccount("f984e2c0-be99-4647-9fe0-2532d2032f5d");
 
             List<AccountInfo> list = dtuBank.getAccounts();
@@ -55,7 +55,6 @@ public class BankServiceSteps {
             //Getting customer with balance
             BigDecimal bigBalance = BigDecimal.valueOf(balance);
             customerAccountIdentifier = dtuBank.createAccountWithBalance(customer, bigBalance);
-            System.out.println(customerAccountIdentifier);
         } catch (BankServiceException_Exception bsException){
             bsException.printStackTrace();
 
@@ -70,13 +69,12 @@ public class BankServiceSteps {
 
     @And("that the customer is registered with DTU Pay")
     public void thatTheCustomerIsRegisteredWithDTUPay() {
-        boolean result = false;
         try {
-            result = customerService.register(customerId, customer.getFirstName() + " " + customer.getLastName(), customer.getCprNumber(), customerAccountIdentifier);
+            customerId = customerService.register(customer.getFirstName() + " " + customer.getLastName(), customer.getCprNumber(), customerAccountIdentifier);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertTrue(result);
+        Assert.assertNotNull(customerId);
 
         // Get customer
         try {
@@ -109,20 +107,18 @@ public class BankServiceSteps {
 
     @And("that the merchant is registered with DTU Pay")
     public void thatTheMerchantIsRegisteredWithDTUPay() {
-        boolean result = false;
         try {
-            result = merchantService.register(merchantId, merchant.getFirstName() + " " + merchant.getLastName(), merchant.getCprNumber(), merchantAccountIdentifier);
+            merchantId = merchantService.register(merchant.getFirstName() + " " + merchant.getLastName(), merchant.getCprNumber(), merchantAccountIdentifier);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertTrue(result);
+        Assert.assertNotNull(merchantId);
 
         // Get merchant
         try {
-            boolean exists = merchantService.validateMerchant(merchantId);
-//            Assert.assertEquals(merchant.getCprNumber(), m.getCpr());
-//            Assert.assertEquals(merchantAccountIdentifier, m.getBankAccount());
-            Assert.assertTrue(exists);
+            Merchant m = merchantService.get(merchantId);
+            Assert.assertEquals(merchant.getCprNumber(), m.getCpr());
+            Assert.assertEquals(merchantAccountIdentifier, m.getBankAccount());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -195,12 +191,20 @@ public class BankServiceSteps {
     @And("get merchant")
     public void getMerchant() {
         try {
-            Merchant m = merchantService.get(merchantId);
-            System.out.println("---------------");
-            System.out.println("123" + " " + m.getCpr());
-            System.out.println(merchantAccountIdentifier + " " + m.getBankAccount());
-            Assert.assertEquals(merchant.getCprNumber(), m.getCpr());
-            Assert.assertEquals(merchantAccountIdentifier, m.getBankAccount());
+            // Create
+            User mer = new User();
+            mer.setCprNumber("m-cpr");
+            mer.setFirstName("m-fn");
+            mer.setLastName("m-ln");
+            String  id = merchantService.register(mer.getFirstName() + " " + mer.getLastName(), mer.getCprNumber(), "merchantAccountIdentifier");
+
+            // Fetch
+            Merchant m = merchantService.get(id);
+            Assert.assertEquals(m.getCpr(), mer.getCprNumber());
+
+            // Delete
+            merchantService.delete(id);
+            Assert.assertNull(merchantService.get(id));
         } catch (Exception e) {
             System.out.println("Exception");
             System.out.println(e.getMessage());

@@ -3,7 +3,9 @@ package dtu.helloservice;
 //import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 public class MerchantService {
@@ -19,39 +21,31 @@ public class MerchantService {
 	 */
 	public Merchant get(String merchantId) {
 		// Get merchant
-//		System.out.println(merchantId);
-//		JSONObject merchant = new JSONObject(target.path(merchantId).request().get());
-//		System.out.println(merchant);
 		return target.path(merchantId).request().get(Merchant.class);
-	}
-
-	/**
-	 * Validate merchant
-	 *
-	 * @param merchantId
-	 * @return Merchant
-	 */
-	public boolean validateMerchant(String merchantId) throws NotFoundException {
-		Response response = target.path("validation").path(merchantId).request().get();
-		return response.getStatus() == Response.Status.OK.getStatusCode();
 	}
 
 	/**
      * Register merchant to dtu simple pay
 	 *
-	 * @param merchantId
      * @param name
      * @param cpr
      * @param bankAccount
      * @return boolean
 	 */
-	public boolean register(String merchantId, String name, String cpr, String bankAccount) {
+	public String register(String name, String cpr, String bankAccount) {
 		// Register merchant
-		Response response  = target.path(merchantId).path(name).path(cpr).path(bankAccount)
-				.request()
-				.post(null);
+		Merchant newMerchant = new Merchant();
+		newMerchant.setCpr(cpr);
+		newMerchant.setBankAccount(bankAccount);
+		newMerchant.setName(name);
+		Response response = target.path("registration")
+					.request()
+					.post(Entity.entity(newMerchant, MediaType.APPLICATION_JSON_TYPE));
 
-		return response.getStatus() == Response.Status.CREATED.getStatusCode();
+		// Get merchant id
+		String mid = response.readEntity(String.class);
+
+		return response.getStatus() == Response.Status.OK.getStatusCode() ? mid : null;
 	}
 
 	/**
