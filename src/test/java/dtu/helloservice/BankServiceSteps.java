@@ -1,37 +1,67 @@
 package dtu.helloservice;
 
-import fastmoney.BankService;
-import fastmoney.BankServiceException_Exception;
-import fastmoney.User;
+import dtu.ws.fastmoney.*;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
-import fastmoney.BankServiceService;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 public class BankServiceSteps {
-    //BankServiceUnused bsU = new BankServiceUnused();
-    BankServiceService dtuBank = new BankServiceService();
+    BankService dtuBank = new BankServiceService().getBankServicePort();
+    PaymentService dtuSimplePay = new PaymentService();
+    CustomerService customerService = new CustomerService();
+    MerchantService merchantService = new MerchantService();
 
     static String customerAccountIdentifier;
-    static User customer;
     static String merchantAccountIdentifier;
+    static User customer;
     static User merchant;
+    static String customerId = "cid1";
+    static String merchantId = "mid1";
+
+    @When("test dtu bank")
+    public void check() throws BankServiceException_Exception {
+        try {
+//            dtuBank.retireAccount("");
+//            dtuBank.retireAccount("085b86ee-4335-412a-8e2c-11fb28bd0ebc");
+//            dtuBank.retireAccount("f984e2c0-be99-4647-9fe0-2532d2032f5d");
+
+            List<AccountInfo> list = dtuBank.getAccounts();
+            for (AccountInfo a: list) {
+                System.out.println(a.getAccountId());
+                System.out.println(a.getUser().getCprNumber());
+                System.out.println(a.getUser().getFirstName());
+                System.out.println(a.getUser().getLastName());
+            }
+        } catch (Exception bsException){
+            System.out.println(bsException.getMessage());
+        }
+    }
 
     @Given("a customer with a bank account with balance {int}")
-    public void aCustomerWithABankAccountWithBalance(BigDecimal balance){
-        //Getting customer with balance
+    public void aCustomerWithABankAccountWithBalance(int balance){
+        // Init customer
+        customer = new User();
         customer.setCprNumber("c-cpr");
         customer.setFirstName("c-fn");
         customer.setLastName("c-ln");
 
         try {
-            customerAccountIdentifier = dtuBank.getBankServicePort().createAccountWithBalance(customer, balance);
+            //Getting customer with balance
+            BigDecimal bigBalance = BigDecimal.valueOf(balance);
+            customerAccountIdentifier = dtuBank.createAccountWithBalance(customer, bigBalance);
+            System.out.println(customerAccountIdentifier);
         } catch (BankServiceException_Exception bsException){
             bsException.printStackTrace();
+
+            if (bsException.getMessage().equals("Account already exists")) {
+                System.out.println(customerAccountIdentifier);
+            }
         }
 
         // Assert account is created
@@ -40,19 +70,37 @@ public class BankServiceSteps {
 
     @And("that the customer is registered with DTU Pay")
     public void thatTheCustomerIsRegisteredWithDTUPay() {
+        boolean result = false;
+        try {
+            result = customerService.register(customerId, customer.getFirstName() + " " + customer.getLastName(), customer.getCprNumber(), customerAccountIdentifier);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertTrue(result);
 
+        // Get customer
+        try {
+            Customer c = customerService.get(customerId);
+            Assert.assertEquals(customer.getCprNumber(), c.getCpr());
+            Assert.assertEquals(customerAccountIdentifier, c.getBankAccount());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Given("a merchant with a bank account with balance {int}")
-    public void aMerchantWithABankAccountWithBalance(BigDecimal balance) {
+    public void aMerchantWithABankAccountWithBalance(int balance) {
+        merchant = new User();
         merchant.setCprNumber("m-cpr");
         merchant.setFirstName("m-fn");
         merchant.setLastName("m-ln");
 
         try {
-            merchantAccountIdentifier = dtuBank.createAccountWithBalance(merchant, balance);
+            BigDecimal bigBalance = BigDecimal.valueOf(balance);
+            merchantAccountIdentifier = dtuBank.createAccountWithBalance(merchant, bigBalance);
         } catch (BankServiceException_Exception bsException){
             bsException.printStackTrace();
+            System.out.println(bsException.getMessage());
         }
 
         // Assert account is created
@@ -61,7 +109,23 @@ public class BankServiceSteps {
 
     @And("that the merchant is registered with DTU Pay")
     public void thatTheMerchantIsRegisteredWithDTUPay() {
+        boolean result = false;
+        try {
+            result = merchantService.register(merchantId, merchant.getFirstName() + " " + merchant.getLastName(), merchant.getCprNumber(), merchantAccountIdentifier);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertTrue(result);
 
+        // Get merchant
+        try {
+            boolean exists = merchantService.validateMerchant(merchantId);
+//            Assert.assertEquals(merchant.getCprNumber(), m.getCpr());
+//            Assert.assertEquals(merchantAccountIdentifier, m.getBankAccount());
+            Assert.assertTrue(exists);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @When("the merchant initiates a payment for {int} kr by the customer")
@@ -81,6 +145,15 @@ public class BankServiceSteps {
 
     @And("the balance of the merchant at the bank is {int} kr")
     public void theBalanceOfTheMerchantAtTheBankIsKr(int arg0) {
+
+    }
+
+    /**
+     * This step is supposed to be called from all scenarios
+     *  that produce accounts, as their last step.
+     */
+    @When("clean up accounts")
+    public void cleanup() {
         cleanupAccount();
     }
 
@@ -88,11 +161,46 @@ public class BankServiceSteps {
      * Clean up account from bank service
      */
     private void cleanupAccount(){
+        // Delete customer account
         try {
-            dtuBank.getBankServicePort().retireAccount(customerAccountIdentifier);
-            dtuBank.getBankServicePort().retireAccount(merchantAccountIdentifier);
-        } catch (BankServiceException_Exception bsException){
-            bsException.printStackTrace();
+            // Remove registration from simple pay
+            customerService.delete(customerId);
+
+            // Delete from dtu bank
+            dtuBank.retireAccount(customerAccountIdentifier);
+
+            // Trigger account not exists error
+            dtuBank.getAccount(customerAccountIdentifier);
+        } catch (BankServiceException_Exception bsException) {
+            // Assert that account is deleted
+            Assert.assertEquals("Account does not exist", bsException.getMessage());
+        }
+
+        // Delete merchant account
+        try {
+            // Remove registration from simple pay
+            merchantService.delete(merchantId);
+
+            // Delete from dtu bank
+            dtuBank.retireAccount(merchantAccountIdentifier);
+
+            // Trigger account not exists error
+            dtuBank.getAccount(merchantAccountIdentifier);
+        } catch (BankServiceException_Exception bsException) {
+            // Assert that account is deleted
+            Assert.assertEquals("Account does not exist", bsException.getMessage());
+        }
+    }
+
+    @And("get merchant")
+    public void getMerchant() {
+        try {
+            Merchant m = merchantService.get(merchantId);
+            System.out.println("---------------");
+            Assert.assertEquals(merchant.getCprNumber(), m.getCpr());
+            Assert.assertEquals(merchantAccountIdentifier, m.getBankAccount());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }
