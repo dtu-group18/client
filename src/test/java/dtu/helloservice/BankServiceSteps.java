@@ -197,9 +197,12 @@ public class BankServiceSteps {
         try {
             Merchant m = merchantService.get(merchantId);
             System.out.println("---------------");
+            System.out.println("123" + " " + m.getCpr());
+            System.out.println(merchantAccountIdentifier + " " + m.getBankAccount());
             Assert.assertEquals(merchant.getCprNumber(), m.getCpr());
             Assert.assertEquals(merchantAccountIdentifier, m.getBankAccount());
         } catch (Exception e) {
+            System.out.println("Exception");
             System.out.println(e.getMessage());
         }
     }

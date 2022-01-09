@@ -1,5 +1,4 @@
 package dtu.helloservice;
-import org.json.JSONObject;
 
 //import javax.json.JsonObject;
 import javax.ws.rs.client.Client;

@@ -170,6 +170,11 @@
 			<artifactId>quarkus-resteasy-jaxb</artifactId>
 			<version>2.2.0.Final</version>
 		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-jsonb</artifactId>
+			<version>1.13.0.Final</version>
+		</dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
