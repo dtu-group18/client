@@ -41,9 +41,14 @@
 					</execution>
 				</executions>
 				<configuration>
-					<!-- The name of your generated source package -->
-					<packageName>com.example.myservice</packageName>
+					<wsdlUrls>
+						<wsdlUrl>http://fm-00.compute.dtu.dk/BankService.wsdl.xml</wsdlUrl>
+					</wsdlUrls>
+					<keep>true</keep>
+					<packageName>dtu.ws.fastmoney</packageName>
+					<sourceDestDir>src/main/java</sourceDestDir>
 				</configuration>
+
 
 				<!-- if you want to use a specific version of JAX-WS, you can do so like this -->
 				<dependencies>
