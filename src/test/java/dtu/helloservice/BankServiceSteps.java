@@ -27,16 +27,15 @@ public class BankServiceSteps {
     @When("test dtu bank")
     public void check() throws BankServiceException_Exception {
         try {
-//            dtuBank.retireAccount("");
-//            dtuBank.retireAccount("085b86ee-4335-412a-8e2c-11fb28bd0ebc");
-//            dtuBank.retireAccount("f984e2c0-be99-4647-9fe0-2532d2032f5d");
-
             List<AccountInfo> list = dtuBank.getAccounts();
             for (AccountInfo a: list) {
                 System.out.println(a.getAccountId());
                 System.out.println(a.getUser().getCprNumber());
                 System.out.println(a.getUser().getFirstName());
                 System.out.println(a.getUser().getLastName());
+                if ((a.getUser().getCprNumber().equals("c-cpr")) ||( a.getUser().getCprNumber().equals("m-cpr"))){
+                    dtuBank.retireAccount(a.getAccountId());
+                }
             }
         } catch (Exception bsException){
             System.out.println(bsException.getMessage());
@@ -124,14 +123,28 @@ public class BankServiceSteps {
         }
     }
 
-    @When("the merchant initiates a payment for {int} kr by the customer")
-    public void theMerchantInitiatesAPaymentForKrByTheCustomer(int arg0) {
+    @When("the merchant initiates a payment for {int} kr by the customer.")
+    public void theMerchantInitiatesAPaymentForKrByTheCustomer(int amount) {
+        //Initiate payment from merchant to customer
+        try {
+            transferAmount = amount;
+            successfulPayment = paymentService.add(customerId, merchantId, String.valueOf(transferAmount));
+        } catch (NotFoundException e) {
+            successfulPayment = false;
+        }
 
     }
 
-    @Then("the payment is successful")
+    @Then("the payment is successful!")
     public void thePaymentIsSuccessful() {
+        assertTrue(successfulPayment);
 
+        // Transfer
+        try {
+            dtuBank.transferMoneyFromTo(customerAccountIdentifier, merchantAccountIdentifier, BigDecimal.valueOf(transferAmount), "Transfer money");
+        } catch (BankServiceException_Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @And("the balance of the customer at the bank is {int} kr")
