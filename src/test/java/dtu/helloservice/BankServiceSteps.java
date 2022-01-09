@@ -28,8 +28,8 @@ public class BankServiceSteps {
     public void check() throws BankServiceException_Exception {
         try {
 //            dtuBank.retireAccount("");
-//            dtuBank.retireAccount("085b86ee-4335-412a-8e2c-11fb28bd0ebc");
-//            dtuBank.retireAccount("f984e2c0-be99-4647-9fe0-2532d2032f5d");
+            //dtuBank.retireAccount("065ff0eb-d6b5-45f4-a82f-1f87c6b9e8cd");
+            //dtuBank.retireAccount("b617dbdf-603c-4f2a-ae55-9d31d37d0c4c");
 
             List<AccountInfo> list = dtuBank.getAccounts();
             for (AccountInfo a: list) {
@@ -55,7 +55,6 @@ public class BankServiceSteps {
             //Getting customer with balance
             BigDecimal bigBalance = BigDecimal.valueOf(balance);
             customerAccountIdentifier = dtuBank.createAccountWithBalance(customer, bigBalance);
-            System.out.println(customerAccountIdentifier);
         } catch (BankServiceException_Exception bsException){
             bsException.printStackTrace();
 
@@ -119,10 +118,10 @@ public class BankServiceSteps {
 
         // Get merchant
         try {
-            boolean exists = merchantService.validateMerchant(merchantId);
-//            Assert.assertEquals(merchant.getCprNumber(), m.getCpr());
-//            Assert.assertEquals(merchantAccountIdentifier, m.getBankAccount());
-            Assert.assertTrue(exists);
+            Merchant m = merchantService.get(merchantId);
+            Assert.assertEquals(merchant.getCprNumber(), m.getCpr());
+            Assert.assertEquals(merchantAccountIdentifier, m.getBankAccount());
+            //Assert.assertTrue(exists);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
