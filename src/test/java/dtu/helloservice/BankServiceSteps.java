@@ -138,8 +138,8 @@ public class BankServiceSteps {
 
     }
 
-    @And("the balance of the custoemr at the bank is {int} kr")
-    public void theBalanceOfTheCustoemrAtTheBankIsKr(int arg0) {
+    @And("the balance of the customer at the bank is {int} kr")
+    public void theBalanceOfTheCustomerAtTheBankIsKr(int arg0) {
 
     }
 

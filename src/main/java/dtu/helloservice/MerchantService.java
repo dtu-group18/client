@@ -1,7 +1,7 @@
 package dtu.helloservice;
 import org.json.JSONObject;
 
-import javax.json.JsonObject;
+//import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -20,9 +20,9 @@ public class MerchantService {
 	 */
 	public Merchant get(String merchantId) {
 		// Get merchant
-		System.out.println(merchantId);
-		JSONObject merchant = new JSONObject(target.path(merchantId).request().get());
-		System.out.println(merchant);
+//		System.out.println(merchantId);
+//		JSONObject merchant = new JSONObject(target.path(merchantId).request().get());
+//		System.out.println(merchant);
 		return target.path(merchantId).request().get(Merchant.class);
 	}
 
@@ -32,7 +32,7 @@ public class MerchantService {
 	 * @param merchantId
 	 * @return Merchant
 	 */
-	public boolean validateMerchant(String merchantId) {
+	public boolean validateMerchant(String merchantId) throws NotFoundException {
 		Response response = target.path("validation").path(merchantId).request().get();
 		return response.getStatus() == Response.Status.OK.getStatusCode();
 	}

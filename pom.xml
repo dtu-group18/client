@@ -10,7 +10,6 @@
 	<artifactId>CucumberExample</artifactId>
 	<name>CucumberExample</name>
 	<version>SNAPSHOT 0.0.1</version>
-
 	<properties>
 		<!--  Set the Java version used by the compiler. -->
 		<!--  Setting to Java 8 will work, in most cases, for installed -->
