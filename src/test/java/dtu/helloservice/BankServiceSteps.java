@@ -143,31 +143,25 @@ public class BankServiceSteps {
         assertTrue(successfulPayment);
 
         // Transfer
-        try {
-            dtuBank.transferMoneyFromTo(customerAccountIdentifier, merchantAccountIdentifier, BigDecimal.valueOf(transferAmount), "Transfer money");
-        } catch (BankServiceException_Exception e) {
-            System.out.println(e.getMessage());
-        }
+//        try {
+//
+//            dtuBank.transferMoneyFromTo(customerAccountIdentifier, merchantAccountIdentifier, BigDecimal.valueOf(transferAmount), "Transfer money");
+//        } catch (BankServiceException_Exception e) {
+//            System.out.println(e.getMessage());
+//        }
     }
 
     @And("the balance of the customer at the bank is {int} kr")
     public void theBalanceOfTheCustomerAtTheBankIsKr(int customerBalance) {
-        try {
-            BigDecimal b =  dtuBank.getAccount(customerAccountIdentifier).getBalance();
-            assertEquals(customerBalance, b.intValue());
-        } catch (BankServiceException_Exception e) {
-            System.out.println(e.getMessage());
-        }
+//            BigDecimal b =  dtuBank.getAccount(customerAccountIdentifier).getBalance();
+            assertEquals(customerBalance, customerService.getBalance(customerId));
     }
 
     @And("the balance of the merchant at the bank is {int} kr")
     public void theBalanceOfTheMerchantAtTheBankIsKr(int merchantBalance) {
-        try {
-            BigDecimal b =  dtuBank.getAccount(merchantAccountIdentifier).getBalance();
-            assertEquals(merchantBalance, b.intValue());
-        } catch (BankServiceException_Exception e) {
-            System.out.println(e.getMessage());
-        }
+//            BigDecimal b =  dtuBank.getAccount(merchantAccountIdentifier).getBalance();
+            assertEquals(merchantBalance, merchantService.getBalance(merchantId));
+
     }
 
     /**

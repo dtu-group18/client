@@ -62,4 +62,17 @@ public class MerchantService {
 
 		return response.getStatus() == Response.Status.OK.getStatusCode();
 	}
+
+	/**
+	 * Get merchant account balance
+	 *
+	 * @param merchantId
+	 * @return
+	 */
+	public int getBalance(String merchantId) {
+		return target.path(merchantId)
+				.path("balance")
+				.request()
+				.get(Integer.class);
+	}
 }

@@ -62,4 +62,17 @@ public class CustomerService {
 
 		return response.getStatus() == Response.Status.OK.getStatusCode();
 	}
+
+	/**
+	 * Get customer account balance
+	 *
+	 * @param customerId
+	 * @return
+	 */
+	public int getBalance(String customerId) {
+		return target.path(customerId)
+				.path("balance")
+				.request()
+				.get(Integer.class);
+	}
 }
